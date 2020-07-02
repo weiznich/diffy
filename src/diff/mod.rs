@@ -195,18 +195,18 @@ fn to_patch<'a>(
 
         // Pre-context
         for line in lines2.get(start2..script.new.start).into_iter().flatten() {
-            lines.push(Line::Context(line));
+            lines.push(Line::Context(*line));
         }
 
         loop {
             // Delete lines from text1
             for line in lines1.get(script.old.clone()).into_iter().flatten() {
-                lines.push(Line::Delete(line));
+                lines.push(Line::Delete(*line));
             }
 
             // Insert lines from text2
             for line in lines2.get(script.new.clone()).into_iter().flatten() {
-                lines.push(Line::Insert(line));
+                lines.push(Line::Insert(*line));
             }
 
             if let Some(s) = edit_script.get(idx + 1) {
@@ -218,7 +218,7 @@ fn to_patch<'a>(
                     for (_i1, i2) in (script.old.end..s.old.start).zip(script.new.end..s.new.start)
                     {
                         if let Some(line) = lines2.get(i2) {
-                            lines.push(Line::Context(line));
+                            lines.push(Line::Context(*line));
                         }
                     }
 
@@ -244,7 +244,7 @@ fn to_patch<'a>(
 
         // Post-context
         for line in lines2.get(script.new.end..end2).into_iter().flatten() {
-            lines.push(Line::Context(line));
+            lines.push(Line::Context(*line));
         }
 
         let len1 = end1 - start1;

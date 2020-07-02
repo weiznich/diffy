@@ -234,12 +234,20 @@ impl fmt::Display for HunkRange {
 ///
 /// A `Line` contains the terminating newline character `\n` unless it is the final
 /// line in the file and the file does not end with a newline character.
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
-pub enum Line<'a> {
+#[derive(Debug, PartialEq, Eq)]
+pub enum Line<'a, T: ?Sized = str> {
     /// A line providing context in the diff which is present in both the old and new file
-    Context(&'a str),
+    Context(&'a T),
     /// A line deleted from the old file
-    Delete(&'a str),
+    Delete(&'a T),
     /// A line inserted to the new file
-    Insert(&'a str),
+    Insert(&'a T),
+}
+
+impl<T: ?Sized> Copy for Line<'_, T> {}
+
+impl<T: ?Sized> Clone for Line<'_, T> {
+    fn clone(&self) -> Self {
+        *self
+    }
 }
